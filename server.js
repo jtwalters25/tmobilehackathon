@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const https = require("https");
 const app = express();
 const config = require('./config');
+const _ = require('lodash');
 
 
 app.use(bodyParser());
@@ -28,17 +29,31 @@ function getParkingSpots() {
   })
 };
 
+function printAvailability(floor, field) {
+  console.log(floor + ": " + (field ? "FULL": data.field1));
+}
 
 app.post('/', (req, res) => {
-  const twiml = new MessagingResponse();
+  global.twiml = new MessagingResponse();
   console.log('results2');
   if (req.body.Body == 'Park') {
     //twiml.message('Number of Available Slots:');
-    getParkingSpots().then((data) => {
-      const twiml2 = new MessagingResponse();
-      twiml2.message('Number of Available Slots:');
+    getParkingSpots().then(function(data) {
+      //var twiml2 = new MessagingResponse();
+      twiml.message('Number of Available Slots:');
+      console.log(results);
       console.log(data);
+      //res.write(data);
+      // console.log("2 Newport: " + (data.field1? "FULL": data.field1));
+      // console.log("4 Newport: " + data.field2);
+      // console.log("5 Newport: " + data.field3);
+      printAvailability("2 Newport", data.field1);
+      printAvailability("4 Newport", data.field2);
+      printAvailability("5 Newport", data.field3);
+      var arr = _.values(_.omit(data, ['created_at', 'entry_id']));
+      console.log(arr);
     });
+    //twiml.message('Number of Available Slots:' + results);
   } else if (req.body.Body == 'bye') {
     twiml.message('Goodbye');
   } else {
@@ -50,7 +65,6 @@ app.post('/', (req, res) => {
   });
   res.end(twiml.toString());
 });
-
 
 http.createServer(app).listen(1337, () => {
   console.log('Express server listening on port 1337');
