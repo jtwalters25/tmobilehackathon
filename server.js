@@ -25,6 +25,10 @@ function getParkingSpots() {
       res.on("end", () => {
         resolve(JSON.parse(results));
       });
+
+      res.on("error", (err) => {
+        reject(err);
+      })
     });
   })
 };
@@ -43,16 +47,22 @@ app.post('/', (req, res) => {
       twiml.message('Number of Available Slots:');
       console.log(results);
       console.log(data);
-      //res.write(data);
-      // console.log("2 Newport: " + (data.field1? "FULL": data.field1));
-      // console.log("4 Newport: " + data.field2);
-      // console.log("5 Newport: " + data.field3);
-      printAvailability("2 Newport", data.field1);
-      printAvailability("4 Newport", data.field2);
-      printAvailability("5 Newport", data.field3);
+      printAvailability("NP 2 Floor 1", data.field1);
+      printAvailability("NP 2 Floor 2", data.field2);
+      printAvailability("NP 4 Floor 1", data.field3);
+      printAvailability("NP 4 Floor 2", data.field4);
+      printAvailability("NP 5 Floor 1", data.field5);
+      printAvailability("NP 5 Floor 2", data.field6);
+      printAvailability("Tower Floor 1", data.field7);
+      printAvailability("Tower Floor 2", data.field8);
       var arr = _.values(_.omit(data, ['created_at', 'entry_id']));
       console.log(arr);
-    });
+      return JSON.stringify(data);
+    }).then(function(res) {
+      console.log(res + "hi");
+      var twiml = new MessagingResponse();
+      twiml.message("hi");
+    }).catch(console.log);
     //twiml.message('Number of Available Slots:' + results);
   } else if (req.body.Body == 'bye') {
     twiml.message('Goodbye');
