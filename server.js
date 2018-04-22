@@ -83,7 +83,12 @@ app.post('/', (req, res) => {
   } else if (req.body.Body == 'bye') {
     twiml.message('Goodbye');
   } else {
-    twiml.message('Text the word Park for lot availability');
+    twiml.message('Text \"Park\" for lot availability');
+
+    res.writeHead(200, {
+      'Content-Type': 'text/xml'
+    });
+    res.end(twiml.toString());
   }
 
   // res.writeHead(200, {
