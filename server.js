@@ -37,7 +37,7 @@ function printAvailability(floor, field) {
   console.log(floor + ": " + (field ? "FULL": data.field1));
 }
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
   global.twiml = new MessagingResponse();
   console.log('results2');
   if (req.body.Body == 'Park') {
@@ -47,21 +47,38 @@ app.post('/', (req, res) => {
       twiml.message('Number of Available Slots:');
       console.log(results);
       console.log(data);
-      printAvailability("NP 2 Floor 1", data.field1);
-      printAvailability("NP 2 Floor 2", data.field2);
-      printAvailability("NP 4 Floor 1", data.field3);
-      printAvailability("NP 4 Floor 2", data.field4);
-      printAvailability("NP 5 Floor 1", data.field5);
-      printAvailability("NP 5 Floor 2", data.field6);
-      printAvailability("Tower Floor 1", data.field7);
-      printAvailability("Tower Floor 2", data.field8);
+      // printAvailability("NP 2 Floor 1", data.field1);
+      // printAvailability("NP 2 Floor 2", data.field2);
+      // printAvailability("NP 4 Floor 1", data.field3);
+      // printAvailability("NP 4 Floor 2", data.field4);
+      // printAvailability("NP 5 Floor 1", data.field5);
+      // printAvailability("NP 5 Floor 2", data.field6);
+      // printAvailability("Tower Floor 1", data.field7);
+      // printAvailability("Tower Floor 2", data.field8);
+
+      var msg = "NP 2 Floor 1" + data.field1 + "/n"
+                + "NP 2 Floor 2" + data.field2 + "/n";
+
+      twiml.message(msg);          
+
       var arr = _.values(_.omit(data, ['created_at', 'entry_id']));
       console.log(arr);
-      return JSON.stringify(data);
-    }).then(function(res) {
-      console.log(res + "hi");
+      return data;
+    }).then(function(result) {
+      //console.log(result + "hi");
       var twiml = new MessagingResponse();
-      twiml.message("hi");
+      //twiml.message("hi " + result);  
+
+      var msg = "NP 2 Floor 1" + result.field1 + "/n"
+                + "NP 2 Floor 2" + result.field2 + "/n";
+
+      twiml.message(msg); 
+      
+      res.writeHead(200, {
+        'Content-Type': 'text/xml'
+      });
+      res.end(twiml.toString());
+      // console.log(twiml.message);
     }).catch(console.log);
     //twiml.message('Number of Available Slots:' + results);
   } else if (req.body.Body == 'bye') {
@@ -70,10 +87,10 @@ app.post('/', (req, res) => {
     twiml.message('Text the word Park for lot availability');
   }
 
-  res.writeHead(200, {
-    'Content-Type': 'text/xml'
-  });
-  res.end(twiml.toString());
+  // res.writeHead(200, {
+  //   'Content-Type': 'text/xml'
+  // });
+  // res.end(twiml.toString());
 });
 
 http.createServer(app).listen(1337, () => {
