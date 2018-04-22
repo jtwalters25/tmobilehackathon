@@ -45,7 +45,7 @@ app.post('/', async (req, res) => {
     getParkingSpots().then(function(data) {
       //var twiml2 = new MessagingResponse();
       twiml.message('Number of Available Slots:');
-      console.log(results);
+      //console.log(results);
       console.log(data);
       // printAvailability("NP 2 Floor 1", data.field1);
       // printAvailability("NP 2 Floor 2", data.field2);
@@ -62,22 +62,36 @@ app.post('/', async (req, res) => {
       twiml.message(msg);          
 
       var arr = _.values(_.omit(data, ['created_at', 'entry_id']));
+
       console.log(arr);
       return data;
     }).then(function(result) {
       //console.log(result + "hi");
       var twiml = new MessagingResponse();
       //twiml.message("hi " + result);  
+      var allZeroes = true;
+      var count = 0;
+      _.forEach(result, function(floor){
+        if (floor != 0 && count < 8) {
+          allZeroes = false;
+        }
+        count++;
+      });
+      console.log(allZeroes);
+      var msg;
+      if (allZeroes === true) {
+        msg = "No spaces available.";
+      } else {
 
-      var msg = "NP 2 Floor 1: " + result.field1 + "\n" +
-                "NP 2 Floor 2: " + result.field2 + "\n" +
-                "NP 4 Floor 1: " + result.field3 + "\n" +
-                "NP 4 Floor 2: " + result.field4 + "\n" +
-                "NP 5 Floor 1: " + result.field5 + "\n" +
-                "NP 5 Floor 2: " + result.field6 + "\n" +
-                "NP Tower Floor 1: " + result.field7 + "\n" +
-                "NP Tower Floor 2: " + result.field8 + "\n";
-
+        msg = "NP 2 Floor 1: " + result.field1 + "\n" +
+                  "NP 2 Floor 2: " + result.field2 + "\n" +
+                  "NP 4 Floor 1: " + result.field3 + "\n" +
+                  "NP 4 Floor 2: " + result.field4 + "\n" +
+                  "NP 5 Floor 1: " + result.field5 + "\n" +
+                  "NP 5 Floor 2: " + result.field6 + "\n" +
+                  "NP Tower Floor 1: " + result.field7 + "\n" +
+                  "NP Tower Floor 2: " + result.field8 + "\n";
+      }  
       twiml.message(msg); 
       
       res.writeHead(200, {
