@@ -15,31 +15,30 @@ const url =
   "https://api.thingspeak.com/channels/480554/feeds/last.json?api_key=" + config.MY_KEY;
 
 function getParkingSpots() {
-  console.log('results');
+  console.log('results1');
   return new Promise((resolve, reject) => {
     https.get(url, res => {
-      // let global.results = "";
       res.on("data", data => {
         results += data;
       });
       res.on("end", () => {
-        results = JSON.parse(results);
-        resolve(JSON.parse.results);
+        resolve(JSON.parse(results));
       });
     });
   })
 };
 
 
-
 app.post('/', (req, res) => {
   const twiml = new MessagingResponse();
-  console.log('results');
+  console.log('results2');
   if (req.body.Body == 'Park') {
+    //twiml.message('Number of Available Slots:');
     getParkingSpots().then((data) => {
-    twiml.message('Number of Available Slots:' + data );
-    console.log(data);
-  });
+      const twiml2 = new MessagingResponse();
+      twiml2.message('Number of Available Slots:');
+      console.log(data);
+    });
   } else if (req.body.Body == 'bye') {
     twiml.message('Goodbye');
   } else {
