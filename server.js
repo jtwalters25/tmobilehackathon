@@ -56,8 +56,8 @@ app.post('/', async (req, res) => {
       // printAvailability("Tower Floor 1", data.field7);
       // printAvailability("Tower Floor 2", data.field8);
 
-      var msg = "NP 2 Floor 1" + data.field1 + "/n"
-                + "NP 2 Floor 2" + data.field2 + "/n";
+      var msg = "NP 2 Floor 1: " + data.field1 + " "
+                + "NP 2 Floor 2: " + data.field2 + " ";
 
       twiml.message(msg);          
 
@@ -69,8 +69,14 @@ app.post('/', async (req, res) => {
       var twiml = new MessagingResponse();
       //twiml.message("hi " + result);  
 
-      var msg = "NP 2 Floor 1" + result.field1 + "/n"
-                + "NP 2 Floor 2" + result.field2 + "/n";
+      var msg = "NP 2 Floor 1: " + result.field1 + "\n" +
+                "NP 2 Floor 2: " + result.field2 + "\n" +
+                "NP 4 Floor 1: " + result.field3 + "\n" +
+                "NP 4 Floor 2: " + result.field4 + "\n" +
+                "NP 5 Floor 1: " + result.field5 + "\n" +
+                "NP 5 Floor 2: " + result.field6 + "\n" +
+                "NP Tower Floor 1: " + result.field7 + "\n" +
+                "NP Tower Floor 2: " + result.field8 + "\n";
 
       twiml.message(msg); 
       
