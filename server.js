@@ -4,11 +4,13 @@ const MessagingResponse = require('twilio').twiml.MessagingResponse;
 const bodyParser = require('body-parser');
 const https = require("https");
 const app = express();
+const config = require('./config');
+
 
 app.use(bodyParser());
 
 const url =
-  "https://api.thingspeak.com/channels/480554/feeds/last.json?api_key=YMKTH12K5ZN9NXM4";
+  "https://api.thingspeak.com/channels/480554/feeds/last.json?api_key=" + config.MY_KEY;
 
 https.get(url, res => {
   let body = "";
