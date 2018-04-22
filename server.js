@@ -33,42 +33,21 @@ function getParkingSpots() {
   })
 };
 
-function printAvailability(floor, field) {
-  console.log(floor + ": " + (field ? "FULL": data.field1));
-}
-
-app.post('/', async (req, res) => {
+app.post('/', (req, res) => {
   global.twiml = new MessagingResponse();
   console.log('results2');
   if (req.body.Body == 'Park') {
     //twiml.message('Number of Available Slots:');
     getParkingSpots().then(function(data) {
-      //var twiml2 = new MessagingResponse();
-      twiml.message('Number of Available Slots:');
-      //console.log(results);
-      console.log(data);
-      // printAvailability("NP 2 Floor 1", data.field1);
-      // printAvailability("NP 2 Floor 2", data.field2);
-      // printAvailability("NP 4 Floor 1", data.field3);
-      // printAvailability("NP 4 Floor 2", data.field4);
-      // printAvailability("NP 5 Floor 1", data.field5);
-      // printAvailability("NP 5 Floor 2", data.field6);
-      // printAvailability("Tower Floor 1", data.field7);
-      // printAvailability("Tower Floor 2", data.field8);
-
-      var msg = "NP 2 Floor 1: " + data.field1 + " "
-                + "NP 2 Floor 2: " + data.field2 + " ";
-
-      twiml.message(msg);          
+      console.log("HERE" + data);
 
       var arr = _.values(_.omit(data, ['created_at', 'entry_id']));
 
-      console.log(arr);
+      console.log("HERE2" + arr);
       return data;
     }).then(function(result) {
-      //console.log(result + "hi");
       var twiml = new MessagingResponse();
-      //twiml.message("hi " + result);  
+       
       var allZeroes = true;
       var count = 0;
       _.forEach(result, function(floor){
@@ -93,7 +72,7 @@ app.post('/', async (req, res) => {
                   "NP Tower Floor 2: " + result.field8 + "\n";
       }  
       twiml.message(msg); 
-      
+      results ="";
       res.writeHead(200, {
         'Content-Type': 'text/xml'
       });
