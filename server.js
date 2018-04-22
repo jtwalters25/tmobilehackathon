@@ -9,35 +9,49 @@ const config = require('./config');
 
 app.use(bodyParser());
 
+global.results = "";
+
 const url =
   "https://api.thingspeak.com/channels/480554/feeds/last.json?api_key=" + config.MY_KEY;
 
-https.get(url, res => {
-  let body = "";
-  res.on("data", data => {
-    body += data;
-  });
-  res.on("end", () => {
-    body = JSON.parse(body);
-    console.log(body
-    );
-  });
-});
+function getParkingSpots() {
+  console.log('results');
+  return new Promise((resolve, reject) => {
+    https.get(url, res => {
+      // let global.results = "";
+      res.on("data", data => {
+        results += data;
+      });
+      res.on("end", () => {
+        results = JSON.parse(results);
+        resolve(JSON.parse.results);
+      });
+    });
+  })
+};
+
+
 
 app.post('/', (req, res) => {
   const twiml = new MessagingResponse();
-
+  console.log('results');
   if (req.body.Body == 'Park') {
-    twiml.message('Hi!');
-  } else if(req.body.Body == 'bye') {
+    getParkingSpots().then((data) => {
+    twiml.message('Number of Available Slots:' + data );
+    console.log(data);
+  });
+  } else if (req.body.Body == 'bye') {
     twiml.message('Goodbye');
   } else {
-    twiml.message('No Body param match, Twilio sends this in the request to your server.');
+    twiml.message('Text the word Park for lot availability');
   }
 
-  res.writeHead(200, {'Content-Type': 'text/xml'});
+  res.writeHead(200, {
+    'Content-Type': 'text/xml'
+  });
   res.end(twiml.toString());
 });
+
 
 http.createServer(app).listen(1337, () => {
   console.log('Express server listening on port 1337');
